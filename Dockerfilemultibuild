@@ -1,0 +1,17 @@
+# ---- Base Node ----
+FROM node:14 AS base
+WORKDIR /app
+COPY package*.json ./
+
+# ---- Dependencies ----
+FROM base AS dependencies  
+RUN npm install
+COPY . .
+
+
+# ---- Release ----
+FROM base AS release  
+COPY --from=dependencies /app/node_modules ./node_modules
+COPY . .
+EXPOSE 5001
+CMD ["npm", "start"]
